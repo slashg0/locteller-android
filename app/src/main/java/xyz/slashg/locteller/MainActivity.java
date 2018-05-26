@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity
 	 * Method to try and parse text of accuracyText and see if it contains a valid
 	 * input for accuracy (float > 0f). Returns default if failed.
 	 *
+	 * @return The desired accuracy value entered by the user (if successfully parsed). Falls back to DEFAULT_ACCURACY_THRESHOLD_M.
 	 * @author SlashG
 	 * @since <nextVersion/>
 	 */
@@ -78,6 +79,12 @@ public class MainActivity extends AppCompatActivity
 		}
 	}
 
+	/**
+	 * Method to init {@link LocationListener} if it is null.
+	 *
+	 * @author SlashG
+	 * @since <nextVersion/>
+	 */
 	protected void initLocationListenerIfNeeded()
 	{
 		if (myLocationListener == null)
@@ -119,6 +126,12 @@ public class MainActivity extends AppCompatActivity
 		}
 	}
 
+	/**
+	 * Method to call when an output has been displayed. This method sets the appState to APP_STATE_INIT.
+	 *
+	 * @author SlashG
+	 * @since <nextVersion/>
+	 */
 	protected void resetAppState()
 	{
 
@@ -127,8 +140,13 @@ public class MainActivity extends AppCompatActivity
 		onAppStateChanged();
 	}
 
-//////////////// BEGIN DEBUG 'STORE TO FILE' CODE - ONLY FOR DEBUGGING ////////////////////////////
-
+	/**
+	 * Method to set values in the output fields of the app.
+	 *
+	 * @param location The location to set the Latitude, Longitude, Altitude and Accuracy in the repective fields. Pass 'null' to clear all fields.
+	 * @author SlashG
+	 * @since <nextVersion/>
+	 */
 	protected void displayLocation(@Nullable Location location)
 	{
 		if (location == null)
@@ -154,6 +172,14 @@ public class MainActivity extends AppCompatActivity
 		}
 	}
 
+	/**
+	 * Method called from the {@link LocationListener} callback when a location passes the threshold accuracy check.
+	 * <p>
+	 * Thie method changes appState to APP_STATE_OUTPUT
+	 *
+	 * @author SlashG
+	 * @since <nextVersion/>
+	 */
 	protected void onDesiredAccuracyAchieved(@NonNull Location location)
 	{
 
@@ -164,12 +190,25 @@ public class MainActivity extends AppCompatActivity
 		onAppStateChanged();
 	}
 
+	/**
+	 * Method (that should be) called everytime the app state is changed.
+	 *
+	 * @author SlashG
+	 * @since <nextVersion/>
+	 */
 	protected void onAppStateChanged()
 	{
 		Log.d(TAG, "onAppStateChanged: ");
 		updateActivityView();
 	}
 
+	/**
+	 * Overridden to force stop getting location updates when the user exits the app (even on minimizing).
+	 * This is to ensure that the get location process doesn't run in the background as that is a potential battery drainer.
+	 *
+	 * @author SlashG
+	 * @since <nextVersion/>
+	 */
 	@Override
 	protected void onStop()
 	{
@@ -177,6 +216,12 @@ public class MainActivity extends AppCompatActivity
 		abortLocationUpdates();
 	}
 
+	/**
+	  * Method that performs the state based updates in the UI.
+	  *
+	  * @since <nextVersion/>
+	  * @author SlashG
+	  */
 	protected void updateActivityView()
 	{
 		if (appState == APP_STATE_GETTING)
@@ -268,6 +313,14 @@ public class MainActivity extends AppCompatActivity
 		}
 	}
 
+	/**
+	 * Method called after {@link LocationManager} and {@link LocationListener} have been init and permissions have been taken care of.
+	 * The {@link LocationManager} is used to get quick location updates from the GPS.
+	 * The method changes the app state to getting.
+	 *
+	 * @author SlashG
+	 * @since <nextVersion/>
+	 */
 	protected void getLocation()
 	{
 		try
@@ -287,8 +340,14 @@ public class MainActivity extends AppCompatActivity
 			Log.e(TAG, "getLocation: some other error", e);
 		}
 	}
-	//////////////// END DEBUG 'STORE TO FILE' CODE ////////////////////////////
 
+	/**
+	 * Method to check for permissions (Marshmallow and above).
+	 *
+	 * @return true, for Marshmallow (and above) devices where both coarse and fine location permissions have been allowed; false, if either or both are denied. true, always for devices running Android Lollipop and below.
+	 * @author SlashG
+	 * @since <nextVersion/>
+	 */
 	protected boolean hasPermission()
 	{
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
@@ -327,6 +386,13 @@ public class MainActivity extends AppCompatActivity
 		}
 	}
 
+	/**
+	 * Method to stop getting updates from the {@link LocationManager}
+	 * The method changes the app state to APP_STATE_OUTPUT.
+	 *
+	 * @author SlashG
+	 * @since <nextVersion/>
+	 */
 	protected void abortLocationUpdates()
 	{
 		Log.d(TAG, "abortLocationUpdates: ");
