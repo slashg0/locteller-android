@@ -3,10 +3,12 @@ package xyz.slashg.locteller;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.DrawableRes;
@@ -360,6 +362,12 @@ public class MainActivity extends AppCompatActivity
 		{
 			return true;
 		}
+	}
+	protected void goToDeveloperSite(View view)
+	{
+		Intent browse = new Intent( Intent.ACTION_VIEW , Uri.parse( getString(R.string.developer_url) ) );
+
+		startActivity( browse );
 	}
 
 	@TargetApi(Build.VERSION_CODES.M)
